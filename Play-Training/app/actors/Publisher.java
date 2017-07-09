@@ -10,11 +10,12 @@ import java.util.Set;
 /**
  * Created by ruth on 2017/07/08.
  */
-public class Publisher {
-    public final Set<ActorRef> actorRefs = new HashSet<>();
+public class Publisher<T> {
+    public final Set<T> actorRefs = new HashSet<T>();
 
-        public Source<T, ?> register() {
-            Source<T, ?> source = Source.<T>actorRef(256, OverflowStrategy.dropHead())
+
+        public akka.stream.javadsl.Source<T, ?> register() {
+            akka.stream.javadsl.Source<T, ?> source = Source.<T>actorRef(256, OverflowStrategy.dropHead())
                     .mapMaterializedValue(actorRef -> {
                         Publisher.this.actorRefs.add(actorRef);
                         return actorRef;
@@ -27,6 +28,6 @@ public class Publisher {
 
         }
     public void broadcast(final T message){
-        for (ActorRef actorRef:this.actorRefs) actorRef.tell(message, ActorRef.noSender());
+        for (T actorRef:this.actorRefs) actorRef.tell(message, ActorRef.noSender());
     }
 }

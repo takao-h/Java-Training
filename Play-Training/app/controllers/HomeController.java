@@ -5,7 +5,6 @@ import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.contrib.process.Sink;
 import akka.stream.javadsl.Flow;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.reactivestreams.Publisher;
@@ -13,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+import views.html.index;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -30,7 +30,7 @@ public class HomeController extends Controller {
 
         ActorSystem actorSystem = ActorSystem.create();
         ActorRef chatRoomActor = actorSystem.actorOf(Props.create(ChatRoomActor.class));
-        static final Publisher<JsonNode> publisher = new Publisher<>();
+        final Publisher<JsonNode> publisher = new Publisher<>();
 
 
 

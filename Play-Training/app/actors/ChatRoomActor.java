@@ -4,12 +4,11 @@ import akka.actor.UntypedActor;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 
-import static controllers.HomeController.publisher;
 
 public class ChatRoomActor extends UntypedActor {
 
 
-    @override
+    @Override
     public void onReceive(Object message)throws Throwable {
         if (message instanceof JsonNode) {
             JsonNode jsonMsseage = (JsonNode) message;
@@ -23,7 +22,7 @@ public class ChatRoomActor extends UntypedActor {
                 JsonNode joinToClient = Json.newObject()
                         .put("type", "joined")
                         .put("username", joinedUser);
-                    publisher.broadcast(joinToClient);
+                    Publisher.broadcast(joinToClient);
                     break;
 
                 case "talk":

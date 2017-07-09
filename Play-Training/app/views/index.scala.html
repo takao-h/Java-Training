@@ -1,20 +1,58 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
-
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
 @main("Welcome to Play") {
+<style>
+.hide {
+    display: none;
+}
+</style>
+<div id="page-wrapper">
+ <div id="status">Connecting...</div>
+ <form id="username-form" action="#">
+  <input id="username" type="text" required>
+  <button id="enterButton" type="submit">Enter</button>
+ </form>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Java")
+ <ul id="messages"></ul>
 
+ <form class="hide" id="message-form" action="#" method="post">
+  <input id="message" required>
+  <button id="sendButton" type="submit">Send</button>
+ </form>
+</div>
+
+<script>
+window.onload = function() {
+    var ws = new WebSocket($("body").data("ws-url"));
+    var username;
+    ws.onerror = function(error) {
+        console.log('WebSocket Error: ' + error);
+    };
+    ws.onopen = function(event) {
+        $('#status').text('Connected to WebSocket');
+    };
+    ws.onmessage = function(event) {
+        var message = event.data;
+        $('#messages').append('<li class="received"><span>Received:</span>' + message + '</li>');
+    };
+    ws.onclose = function(event) {
+        $('#status').text('Disconnected from WebSocket.');
+    };
+    $('#enterButton').click(function(e) {
+        $('#username-form').addClass('hide');
+        $('#message-form').removeClass('hide');
+        e.preventDefault();
+        username = $('#username').val();
+        console.log(username);
+        ws.send(JSON.stringify({type: 'join', username: username}));
+        $('#username').val('');
+        return false;
+    });
+    $('#sendButton').click(function(e) {
+        e.preventDefault();
+        var message = $('#message').val();
+        ws.send(JSON.stringify({type: "talk", username: username, chatMessage: message}));
+        $('#message').val('');
+        return false;
+    });
+};
+</script>
 }
