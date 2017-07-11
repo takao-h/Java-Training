@@ -26,14 +26,14 @@ public class ChatRoomActor extends UntypedActor {
                     break;
 
                 case "talk":
-                    String talkedUser  = joinMessage.get("username").asText();
-                    String chatMessage = joinMessage.get("chatMessage").asText();
+                    String talkedUser  = jsonMessage.get("username").asText();
+                    String chatMessage = jsonMessage.get("chatMessage").asText();
                     JsonNode talkClient =
                             Json.newObject()
                             .put("type", "talked")
                             .put("username", talkedUser)
                             .put("chatMessage", chatMessage);
-                    publisher.broascast(talkClient);
+                    Publisher.broadcast(talkClient);
                     break;
 
                 default:

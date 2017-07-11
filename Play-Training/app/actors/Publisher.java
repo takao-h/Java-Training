@@ -27,7 +27,7 @@ public class Publisher<T> {
             return source;
 
         }
-    public void broadcast(final T message){
+    public static void broadcast(final T message){
         for (T actorRef:this.actorRefs) actorRef.tell(message, ActorRef.noSender());
     }
 }
