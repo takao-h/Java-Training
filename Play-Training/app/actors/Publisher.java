@@ -21,13 +21,13 @@ public class Publisher<T> {
                         return actorRef;
                     })
                     .watchTermination((actorRef, termination) -> {
-                        termination.whenComplete((done, cause) -> Publisher.this.actorRefs.remove(actorRef));
+                        termination.whebComplete((done, cause) -> Publisher.this.actorRefs.remove(actorRef));
                         return null;
                     });
             return source;
 
         }
-    public static void broadcast(final T message){
+    public void broadcast(final T message){
         for (T actorRef:this.actorRefs) actorRef.tell(message, ActorRef.noSender());
     }
 }
