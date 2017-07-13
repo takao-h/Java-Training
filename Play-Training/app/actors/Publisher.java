@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by ruth on 2017/07/08.
  */
-public class Publisher<T> {
+public class Publisher<T extends ActorRef> {
     public final Set<T> actorRefs = new HashSet<T>();
 
 
@@ -21,13 +21,15 @@ public class Publisher<T> {
                         return actorRef;
                     })
                     .watchTermination((actorRef, termination) -> {
-                        termination.whebComplete((done, cause) -> Publisher.this.actorRefs.remove(actorRef));
+                        termination.whenComplete((done, cause) -> Publisher.this.actorRefs.remove(actorRef));
                         return null;
                     });
             return source;
 
         }
-    public void broadcast(final T message){
-        for (T actorRef:this.actorRefs) actorRef.tell(message, ActorRef.noSender());
+    public void broadcast(final T message) {
+        for (ActorRef actorRef: this.actorRefs) {
+            actorRef.tell(message, ActorRef.noSender());
+        }
     }
 }

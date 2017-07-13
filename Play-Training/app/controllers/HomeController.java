@@ -27,22 +27,21 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
+    ActorSystem actorSystem = ActorSystem.create();
+    ActorRef chatRoomActor = actorSystem.actorOf(Props.create(ChatRoomActor.class));
+    final Publisher<JsonNode> publisher = new Publisher<>();
+
+
+
     public Result index() {
-
-        ActorSystem actorSystem = ActorSystem.create();
-        ActorRef chatRoomActor = actorSystem.actorOf(Props.create(ChatRoomActor.class));
-        final Publisher<JsonNode> publisher = new Publisher<>();
-
-
-
-        return ok(index.render("Your new application is ready."));
+        return ok(index.render());
     }
 
 
     public WebSocket ws(){
         return WebSocket.Json.accept((Http.RequestHeader requestHeader) -> {
             akka.stream.javadsl.Source<JsonNode, ?> source = publisher.register();
-            akka.stream.javadsl.Sink<JsonNode, NotUsed> sink = Sink.actorRef(chatRoomActor, "Sucsess");
+            akka.stream.javadsl.Sink<JsonNode, NotUsed> sink = Sink.actorRef(chatRoomActor, java.util.Optional.of("Sucsess"));
             Flow<JsonNode, JsonNode, NotUsed> flow = Flow.fromSinkAndSource(sink, source);
            return flow;
         });
