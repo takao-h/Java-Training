@@ -4,45 +4,44 @@ import akka.actor.UntypedActor;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 
+import static controllers.HomeController.publisher;
 
 public class ChatRoomActor extends UntypedActor {
 
-
     @Override
-    public void onReceive(Object message)throws Throwable {
+    public void onReceive(Object message) throws Throwable {
         if (message instanceof JsonNode) {
-            JsonNode jsonMsseage = (JsonNode) message;
-            String type = jsonMsseage.get("type").textValue();
-
+            JsonNode jsonMessage = (JsonNode) message;
+            String type = jsonMessage.get("type").textValue();
 
             switch (type) {
 
-                case "json":
-                String joinedUser     = jsonMsseage.get("username").asText();
-                JsonNode joinToClient = Json.newObject()
-                        .put("type", "joined")
-                        .put("username", joinedUser);
-                    Publisher.broadcast(joinToClient);
+                case "join":
+                    String joinedUser = jsonMessage.get("username").asText();
+                    JsonNode joinToClient =
+                            Json.newObject()
+                                    .put("type", "joined")
+                                    .put("username", joinedUser);
+                    publisher.broadcast(joinToClient);
                     break;
 
                 case "talk":
-                    String talkedUser  = jsonMessage.get("username").asText();
+                    String talkedUser = jsonMessage.get("username").asText();
                     String chatMessage = jsonMessage.get("chatMessage").asText();
-                    JsonNode talkClient =
+                    JsonNode talkToClient =
                             Json.newObject()
-                            .put("type", "talked")
-                            .put("username", talkedUser)
-                            .put("chatMessage", chatMessage);
-                    Publisher.broadcast(talkClient);
+                                    .put("type", "talked")
+                                    .put("username", talkedUser)
+                                    .put("chatMessage", chatMessage);
+                    publisher.broadcast(talkToClient);
                     break;
 
                 default:
                     System.out.println("Json Error: type is not allowed");
                     break;
             }
-        }else {
+        } else {
             System.out.println("chatRoomActor received not Json");
         }
     }
-
 }
