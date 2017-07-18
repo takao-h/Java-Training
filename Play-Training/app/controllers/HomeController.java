@@ -11,6 +11,7 @@ import akka.stream.scaladsl.Source;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.reactivestreams.Publisher;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import views.html.index;
@@ -31,8 +32,9 @@ public class HomeController extends Controller {
     ActorRef chatRoomActor = actorSystem.actorOf(Props.create(ChatRoomActor.class));
     public static final Publisher<JsonNode> publisher = new Publisher<>();
     public WebSocket ws() {
-        return WebSocket.Json.accept(requestHeader -> {
-            Source<JsonNode, ?> source = publisher.register();
+        return WebSocket.Json.accept((Http.RequestHeader requestHeader) -> {
+            Source<JsonNode, ?> source;
+            source = publisher.register();
             Sink<JsonNode, NotUsed> sink = Sink.actorRef(chatRoomActor, "success");
             Flow<JsonNode, JsonNode, NotUsed> flow = Flow.fromSinkAndSource(sink, source);
             return flow;
