@@ -30,13 +30,6 @@ public class HomeController extends Controller {
     ActorSystem actorSystem = ActorSystem.create();
     ActorRef chatRoomActor = actorSystem.actorOf(Props.create(ChatRoomActor.class));
     public static final Publisher<JsonNode> publisher = new Publisher<>();
-
-    public Result index() {
-        return ok(index.render());
-
-    }
-
-
     public WebSocket ws() {
         return WebSocket.Json.accept(requestHeader -> {
             Source<JsonNode, ?> source = publisher.register();
