@@ -22,7 +22,7 @@ public class ChatRoomActor extends UntypedActor {
                             Json.newObject()
                                     .put("type", "joined")
                                     .put("username", joinedUser);
-                    publisher.broadcast(joinToClient);
+                    publisher.Broadcast(joinToClient);
                     break;
 
                 case "talk":
@@ -33,7 +33,7 @@ public class ChatRoomActor extends UntypedActor {
                                     .put("type", "talked")
                                     .put("username", talkedUser)
                                     .put("chatMessage", chatMessage);
-                    publisher.broadcast(talkToClient);
+                    publisher.Broadcast(talkToClient);
                     break;
 
                 default:
