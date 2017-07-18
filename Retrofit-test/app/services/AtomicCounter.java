@@ -20,7 +20,8 @@ public class AtomicCounter implements Counter {
 
     @Override
     public int nextCount() {
-       return atomicCounter.getAndIncrement();
+
+        return atomicCounter.getAndIncrement();
     }
 
 }
