@@ -15,6 +15,7 @@ public class ChatRoomActor extends UntypedActor {
             String type = jsonMessage.get("type").textValue();
 
             switch (type) {
+                
 
                 case "join":
                     String joinedUser = jsonMessage.get("username").asText();
@@ -22,7 +23,7 @@ public class ChatRoomActor extends UntypedActor {
                             Json.newObject()
                                     .put("type", "joined")
                                     .put("username", joinedUser);
-                    publisher.Broadcast(joinToClient);
+                    publisher.broadcast(joinToClient);
                     break;
 
                 case "talk":
@@ -33,7 +34,7 @@ public class ChatRoomActor extends UntypedActor {
                                     .put("type", "talked")
                                     .put("username", talkedUser)
                                     .put("chatMessage", chatMessage);
-                    publisher.Broadcast(talkToClient);
+                    publisher.broadcast(talkToClient);
                     break;
 
                 default:
