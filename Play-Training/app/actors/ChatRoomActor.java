@@ -15,7 +15,7 @@ public class ChatRoomActor extends UntypedActor {
             String type = jsonMessage.get("type").textValue();
 
             switch (type) {
-                
+
 
                 case "join":
                     String joinedUser = jsonMessage.get("username").asText();
